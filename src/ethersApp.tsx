@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TOKEN_ABI, TOKEN_ADDRESS } from "./Token";
 
 export default function EthersApp() {
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [provider, setProvider] = useState<ethers.WebSocketProvider | null>(null);
   const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const [balance, setBalance] = useState<string>("0.0");
@@ -13,15 +13,16 @@ export default function EthersApp() {
   const connectWallet = async () => {
     if (window.ethereum) {
       try {
-        // await window.ethereum.request({ method: "eth_requestAccounts" });
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const web3WebSocketProvider = new ethers.WebSocketProvider('wss://base-sepolia.infura.io/ws/v3/00ecddcb756d41b1a6f2a4da347dd52f')
         const web3Provider = new ethers.BrowserProvider(window.ethereum);
         const web3Signer = await web3Provider.getSigner();
-        setProvider(web3Provider);
+        setProvider(web3WebSocketProvider);
         setSigner(web3Signer);
 
         const address = await (await web3Signer).getAddress();
         setUserAddress(address);
-        await getBalance(address, web3Provider);
+        await getBalance(address, web3WebSocketProvider);
       } catch (error) {
         console.error("User rejected the request.", error);
       }
@@ -39,7 +40,7 @@ export default function EthersApp() {
 
   const getBalance = async (
     address: string,
-    web3Provider: ethers.BrowserProvider
+    web3Provider: ethers.WebSocketProvider
   ) => {
     if (web3Provider) {
       try {
