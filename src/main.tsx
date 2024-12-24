@@ -11,6 +11,7 @@ import { Account } from './account';
 import { WalletOptions } from './wallet-options';
 
 import './index.css';
+import EthersApp from './ethersApp.tsx';
 function ConnectWallet() {
   const { isConnected } = useAccount();
   if (isConnected) return <Account />;
@@ -21,11 +22,12 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <WagmiProvider config={config}>
+    {/* <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <ConnectWallet />
         <SendTransaction />
       </QueryClientProvider>
-    </WagmiProvider>
+    </WagmiProvider> */}
+    <EthersApp />
   </React.StrictMode>
 );
